@@ -136,6 +136,16 @@ namespace ExcercisesList
         {
             int result = Int32.Parse(stringArray[0]);
 
+            if(RemoveProduct(false, stringArray) == true)
+            {
+                PrintRedMessage("Id already exists replace the old one y/n ?: ");
+                if (Console.ReadLine().ToUpper() == "Y")
+                {
+                    RemoveProduct(true, stringArray);
+                }
+            }
+
+            //Calls a method that calls the correct overload constructor for 'Product' class
             if (stringArray.Length == 2)
                 StringArray_2(result, stringArray);
             if (stringArray.Length == 3)
@@ -143,13 +153,17 @@ namespace ExcercisesList
         }
         static void StringArray_2(int id, string[] stringArray)
         {
+            //User entered (int)id,(string)name
             Module_10_5_List.Add(new Product(id, stringArray[1]));
         }
         static void StringArray_3(int id, string[] stringArray)
         {
             bool parsed = Int32.TryParse(stringArray[2], out int nbStores);
-            if(parsed == true)
+            //user entered (int)id,(string)name,(int)nbStores
+            //or           (int)id,(string)name,(int)nbStores,(string)command
+            if (parsed == true)
                 Module_10_5_List.Add(new Product(id, stringArray[1], nbStores));
+            //User entered (int)id,(string)name,(string)command
             else
                 Module_10_5_List.Add(new Product(id, stringArray[1]));
         }
@@ -163,7 +177,7 @@ namespace ExcercisesList
         static void PrintRedMessage(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(msg);
+            Console.Write(msg);
             Console.ForegroundColor = currentColor;
         }
         static void SetTextColor(ConsoleColor color)
@@ -171,25 +185,38 @@ namespace ExcercisesList
             currentColor = color;
             Console.ForegroundColor = currentColor;
         }
-        static void RemoveProduct(string[] stringArray)
+        static bool RemoveProduct(bool delete, string[] stringArray)
         {
-            Console.WriteLine("RemoveProduct -- start");
+            //Check if a product with the same id already exists 
+            //If true and parameter 'delete is:
+            //true - delete the old product
+            //false - return true to tell the user that id already exists
             int id = Int32.Parse(stringArray[0]);
             List<Product> products = Module_10_5_List.OrderBy(x => x.Id == id).ToList();
-            for (int i = 0; i < products.Count(); i++)
+
+            if(products.Count() > 0 && delete == true)
             {
-                Console.WriteLine("RemoveProduct: " + products[i].Name);
-                Module_10_5_List.Remove(products[i]);
+                for (int i = 0; i < products.Count(); i++)
+                {
+                    //Console.WriteLine($"Removed product id: {products[i].Id} name: {products[i].Name}");
+                    Module_10_5_List.Remove(products[i]);
+                    return false;
+                }
             }
+            if(products.Count() > 0 && delete == false)
+            {
+                return true;
+            }
+            return false;
         }
         static string[] Capitalize(string[] stringArray)
         {
+            //Capitalize the first letter in products name
             stringArray[1] = stringArray[1].ToUpper();
             return stringArray;
         }
         static void DoCommand(string c, string[] stringArray)
         {
-            Console.WriteLine("DoCommand: " + c);
             string[] commands = c.Split("+");
 
             foreach (string cmd in commands)
@@ -197,7 +224,7 @@ namespace ExcercisesList
                 switch (cmd)
                 {
                     case "REPLACE":
-                        RemoveProduct(stringArray);
+                        RemoveProduct(true, stringArray);
                         break;
                     case "TOUPPER":
                         stringArray = Capitalize(stringArray);

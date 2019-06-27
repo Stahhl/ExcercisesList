@@ -12,13 +12,13 @@ namespace ExcercisesList
 
         public Product(int Id, string Name)
         {
-            Console.WriteLine("Override - 1 ");
+            //Console.WriteLine("Override - 1 ");
             this.Id = Id;
             this.Name = Name;
         }
         public Product(int Id, string Name, int NumberOfStores)
         {
-            Console.WriteLine("Override - 2 ");
+            //Console.WriteLine("Override - 2 ");
             this.Id = Id;
             this.Name = Name;
             this.NumberOfStores = NumberOfStores;
